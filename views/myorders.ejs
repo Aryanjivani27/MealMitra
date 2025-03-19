@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Orders</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', Arial, sans-serif;
+        }
+
+        body {
+            background: #f8f9fa;
+            min-height: 100vh;
+            padding-top: 80px;
+        }
+
+        .orders-container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+
+        .orders-title {
+            text-align: center;
+            color: #628B75;
+            margin-bottom: 40px;
+            font-size: 32px;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 15px;
+        }
+
+        .orders-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background: #628B75;
+            border-radius: 2px;
+        }
+
+        .order-card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+            padding: 30px;
+            margin-bottom: 25px;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .order-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 25px rgba(0,0,0,0.1);
+        }
+
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .order-id {
+            font-weight: 600;
+            color: #628B75;
+            font-size: 18px;
+            letter-spacing: 0.5px;
+        }
+
+        .order-date {
+            color: #666;
+            font-size: 15px;
+            background: #f8f9fa;
+            padding: 6px 12px;
+            border-radius: 8px;
+        }
+
+        .order-details {
+            display: grid;
+            gap: 15px;
+        }
+
+        .order-details p {
+            color: #444;
+            font-size: 16px;
+            line-height: 1.6;
+            display: flex;
+            align-items: center;
+        }
+
+        .order-details strong {
+            color: #628B75;
+            margin-right: 12px;
+            min-width: 140px;
+            font-weight: 600;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-pending {
+            background-color: #fff8e1;
+            color: #f57c00;
+            border: 1px solid #ffe0b2;
+        }
+
+        .status-delivered {
+            background-color: #e8f5e9;
+            color: #628B75;
+            border: 1px solid #c8e6c9;
+        }
+
+        .status-cancelled {
+            background-color: #ffebee;
+            color: #e01414;
+            border: 1px solid #ffcdd2;
+        }
+
+        .no-orders {
+            text-align: center;
+            margin-top: 50px;
+            color: #666;
+            font-size: 18px;
+            padding: 40px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+        }
+
+        .nav-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background-color: white;
+            padding: 15px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.08);
+            z-index: 1000;
+        }
+
+        .logo {
+            color: #628B75;
+            font-size: 28px;
+            font-weight: bold;
+            text-decoration: none;
+            font-family: 'Poppins', sans-serif;
+            letter-spacing: 1px;
+            transition: color 0.3s ease;
+        }
+
+        .logo:hover {
+            color: #9F7511;
+        }
+
+        .download-btn {
+            background-color: #628B75;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+            width: fit-content;
+            text-decoration: none;
+        }
+
+        .download-btn:hover {
+            background-color: #4a6b59;
+            transform: translateY(-2px);
+        }
+
+        .download-btn i {
+            font-size: 16px;
+        }
+
+        @media (max-width: 768px) {
+            .orders-container {
+                padding: 0 15px;
+            }
+
+            .order-card {
+                padding: 20px;
+            }
+
+            .order-details strong {
+                min-width: 120px;
+            }
+
+            .orders-title {
+                font-size: 28px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav-bar">
+        <a href="/" class="logo">MealMitra</a>
+    </nav>
+    <div class="orders-container">
+        <h1 class="orders-title">My Orders</h1>
+        
+        <% if (orders && orders.length > 0) { %>
+            <% orders.forEach(order => { %>
+                <div class="order-card">
+                    <div class="order-header">
+                        <span class="order-id">Order #<%= order._id %></span>
+                        <span class="order-date"><%= new Date(order.date).toLocaleDateString() %></span>
+                    </div>
+                    <div class="order-details">
+                        <p><strong>Customer Name:</strong> <%= order.username %></p>
+                        <p><strong>Quantity:</strong> <%= order.quantity %></p>
+                        <p><strong>Total Amount:</strong> ₹<%= order.totalamount %></p>
+                        <p><strong>Delivery Address:</strong> <%= order.address %></p>
+                        <p><strong>Day:</strong> <%= order.menuId ? order.menuId.day.charAt(0).toUpperCase() + order.menuId.day.slice(1) : 'N/A' %></p>
+                        <p><strong>items:</strong> <%= order.menuId ? order.menuId.description : 'N/A' %></p>
+                        <p><strong>Status:</strong> 
+                            <span class="status-badge status-<%= order.status.toLowerCase() %>">
+                                <%= order.status %>
+                            </span>
+                        </p>
+                        <% if (order.status.toLowerCase() === 'delivered') { %>
+                            <a href="/user/download-invoice/<%= order._id %>" style="text-decoration: none;" class="download-btn">
+                                <i class="fas fa-download"></i> Download Invoice
+                            </a>
+                        <% } %>
+                    </div>
+                </div>
+            <% }); %>
+        <% } else { %>
+            <div class="no-orders">
+                <p>No orders found.</p>
+            </div>
+        <% } %>
+    </div>
+</body>
+</html> 

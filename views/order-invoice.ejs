@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Order Invoice - MealMitra</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 40px;
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        h1 {
+            color: #b83e3e;
+            font-size: 32px;
+            margin: 0;
+        }
+        
+        h2 {
+            color: #333;
+            text-align: center;
+            font-weight: normal;
+            margin-top: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .separator {
+            border-top: 2px solid #ff6b6b;
+            margin: 30px 0;
+        }
+        
+        .info-container {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        
+        .info-group {
+            width: 48%;
+        }
+        
+        .info-label {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .info-value {
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+        
+        .watermark {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 100px;
+            color: rgba(233, 180, 180, 0.2);
+            z-index: -1;
+            white-space: nowrap;
+        }
+        
+        .items-section {
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .footer {
+            margin-top: 40px;
+            border-top: 1px solid #eee;
+            padding-top: 20px;
+            text-align: center;
+        }
+        
+        .total-amount {
+            text-align: right;
+            margin-top: 20px;
+            font-size: 18px;
+        }
+        
+        .amount {
+            font-size: 24px;
+            font-weight: bold;
+            color: #b83e3e;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>MealMitra</h1>
+        <h2>Order Invoice</h2>
+    </div>
+    
+    <div class="separator"></div>
+    
+    <div class="info-container">
+        <div class="info-group">
+            <div class="info-label">Order ID</div>
+            <div class="info-value">#<%= order._id %></div>
+            
+            <div class="info-label">Customer Name</div>
+            <div class="info-value"><%= order.username %></div>
+            
+            <div class="info-label">Mobile Number</div>
+            <div class="info-value"><%= order.phone %></div>
+        </div>
+        
+        <div class="info-group">
+            <div class="info-label">Date</div>
+            <div class="info-value"><%= new Date(order.date).toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' }) %></div>
+            
+            <div class="info-label">Payment Method</div>
+            <div class="info-value"><%= order.paymentMethod ? order.paymentMethod.toUpperCase() : 'COD' %></div>
+            
+            <div class="info-label">Status</div>
+            <div class="info-value"><%= order.status ? order.status.charAt(0).toUpperCase() + order.status.slice(1) : 'Delivered' %></div>
+        </div>
+    </div>
+    
+    <div class="watermark">MEAL MITRA</div>
+    
+    <div class="items-section">
+        <div class="info-label">Items Ordered</div>
+        <div class="info-value">4 roti, mag masala(100gm), chass</div>
+        
+        <div class="info-label">Quantity</div>
+        <div class="info-value"><%= order.quantity %> units</div>
+    </div>
+    
+    <div class="separator"></div>
+    
+    <div class="total-amount">
+        Total Amount<br>
+        <span class="amount">₹<%= order.totalamount %></span>
+    </div>
+    
+    <div class="footer">
+        <p>Thank you for ordering with MealMitra!</p>
+        <p>For any queries, please contact mealmitra@gmail.com</p>
+    </div>
+</body>
+</html>

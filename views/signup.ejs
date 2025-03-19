@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - Tiffin Service</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            background: whitesmoke;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .signup-container {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 450px;
+        }
+
+        .signup-title {
+            text-align: center;
+            font-size: 28px;
+            color: #333;
+            margin-bottom: 30px;
+        }
+
+        .user-type {
+            margin-bottom: 25px;
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+        }
+
+        .radio-group input[type="radio"] {
+            margin-right: 8px;
+            accent-color: #ff6b6b;
+        }
+
+        .radio-group label {
+            color: #555;
+            cursor: pointer;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 500;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #ff6b6b;
+        }
+
+        .signup-btn {
+            width: 100%;
+            padding: 14px;
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s;
+            margin-top: 10px;
+        }
+
+        .signup-btn:hover {
+            background: #ff5252;
+        }
+
+        .login-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .login-link a {
+            color: #ff6b6b;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .login-link a:hover {
+            text-decoration: underline;
+        }
+
+        .password-requirements {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .form-group.seller-option {
+            display: none;  /* Hidden by default */
+        }
+
+        .form-group input[type="file"] {
+            padding: 10px;
+            font-size: 14px;
+        }
+
+        .form-group .file-info {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .form-group input[type="tel"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            min-height: 100px;
+            resize: vertical;
+            transition: border-color 0.3s;
+        }
+
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #ff6b6b;
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const userTypeRadios = document.querySelectorAll('input[name="userType"]');
+            const logoField = document.querySelector('.seller-option');
+            const passwordInput = document.querySelector('input[name="password"]');
+            const confirmPasswordInput = document.querySelector('input[name="confirmpassword"]');
+            const form = document.querySelector('form');
+
+            // Show/hide logo field based on user type
+            userTypeRadios.forEach(radio => {
+                radio.addEventListener('change', function() {
+                    if (this.value === 'tiffinseller') {
+                        logoField.style.display = 'block';
+                    } else {
+                        logoField.style.display = 'none';
+                    }
+                });
+            });
+
+            // Password validation
+            function validatePassword() {
+                if (confirmPasswordInput.value !== passwordInput.value) {
+                    confirmPasswordInput.setCustomValidity('');
+                    
+                    // Create error message if it doesn't exist
+                    let errorMessage = confirmPasswordInput.parentElement.querySelector('.password-error');
+                    if (!errorMessage) {
+                        errorMessage = document.createElement('div');
+                        errorMessage.className = 'password-error';
+                        errorMessage.style.color = '#ff0000';
+                        errorMessage.style.fontSize = '12px';
+                        errorMessage.style.marginTop = '5px';
+                        confirmPasswordInput.parentElement.appendChild(errorMessage);
+                    }
+                    
+                    errorMessage.textContent = 'Passwords do not match';
+                    confirmPasswordInput.style.borderColor = '#ff0000';
+                    return false;
+                } else {
+                    // Remove error message if passwords match
+                    const errorMessage = confirmPasswordInput.parentElement.querySelector('.password-error');
+                    if (errorMessage) {
+                        errorMessage.textContent = '';
+                    }
+                    confirmPasswordInput.style.borderColor = '#ddd';
+                    confirmPasswordInput.setCustomValidity('');
+                    return true;
+                }
+            }
+
+            // Check passwords when typing in either field
+            passwordInput.addEventListener('input', validatePassword);
+            confirmPasswordInput.addEventListener('input', validatePassword);
+
+            // Form submission validation
+            form.addEventListener('submit', function(event) {
+                if (!validatePassword()) {
+                    event.preventDefault();
+                }
+            });
+
+            // Phone number validation
+            document.getElementById('phone').addEventListener('input', function(e) {
+                let value = e.target.value.replace(/\D/g, ''); // Remove non-digits
+                if (value.length > 10) value = value.slice(0, 10); // Limit to 10 digits
+                e.target.value = value;
+            });
+        });
+    </script>
+</head>
+<body>
+    <div class="signup-container">
+        <h1 class="signup-title">SIGN UP</h1>
+        
+        <form action="/user/register" method="post" enctype="multipart/form-data">
+            <div class="user-type">
+                <div class="radio-group">
+                    <input type="radio" id="user" name="userType" value="user" checked>
+                    <label for="user">User</label>
+                    
+                    <input type="radio" id="tiffinseller" name="userType" value="tiffinseller">
+                    <label for="tiffinseller">Tiffin Seller</label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="username">
+                    <i class="fas fa-user"></i> Username
+                </label>
+                <input type="text" id="username" name="username" required>
+            </div>
+
+            <div class="form-group">
+                <label for="email">
+                    <i class="fas fa-envelope"></i> Email
+                </label>
+                <input type="email" id="email" name="email" required>
+            </div>
+
+            <!-- New Phone Field -->
+            <div class="form-group">
+                <label for="phone">
+                    <i class="fas fa-phone"></i> Phone Number
+                </label>
+                <input type="tel" 
+                       id="phone" 
+                       name="phone" 
+                       pattern="[0-9]{10}" 
+                       title="Please enter a valid 10-digit phone number"
+                       required>
+            </div>
+
+            <!-- New Address Field -->
+            <div class="form-group">
+                <label for="address">
+                    <i class="fas fa-map-marker-alt"></i> Address
+                </label>
+                <textarea id="address" 
+                          name="address" 
+                          placeholder="Enter your complete address"
+                          required></textarea>
+            </div>
+
+            <div class="form-group seller-option">
+                <label for="logo">
+                    <i class="fas fa-image"></i> Business Logo
+                </label>
+                <input name="image" type="file" id="logo" accept="image/*">
+                <div class="file-info">
+                    Accepted formats: JPG, PNG, GIF (Max size: 2MB)
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="password">
+                    <i class="fas fa-lock"></i> Password
+                </label>
+                <input type="password"  name="password"
+       pattern="^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%?&])[A-Za-z\d@$!%?&]{8,}$" 
+       required>
+                <!-- <input type="password" id="password" name="password" required> -->
+                <div class="password-requirements">
+                    Password must be at least 8 characters long and include letters,numbers and special symbole
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="confirm-password">
+                    <i class="fas fa-lock"></i> Confirm Password
+                </label>
+                <input type="password" id="confirm-password" name="confirmpassword" required>
+            </div>
+
+            <button type="submit" class="signup-btn">SIGN UP</button>
+
+            <div class="login-link">
+                Already have an account? <a href="#">LOGIN</a>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

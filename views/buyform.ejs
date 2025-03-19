@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Example</title>
+    <link rel="stylesheet" href="/buyformcss.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script>
+        if("<%= message %>"){
+                alert("<%= message %>")
+        }
+    </script>
+</head>
+<body>
+    <form action="/user/buy/<%= menuId %>" method="post">
+        <!-- Add hidden fields for menuId and sellerId -->
+        <input type="hidden" name="menuId" value="<%= menuId %>">
+        <input type="hidden" name="sellerId" value="">
+        
+        <!-- <label for="username">
+            <i class="fas fa-user"></i> Username:
+        </label>
+        <input type="text" 
+               id="username" 
+               name="username" 
+               placeholder="Enter your name"
+               required><br><br> -->
+
+        <!-- <label for="phone">
+            <i class="fas fa-phone"></i> Phone Number:
+        </label>
+        <input type="tel" 
+               id="phone" 
+               name="phone" 
+               placeholder="Enter your phone number"
+               pattern="[0-9]{10}"
+               required><br><br>
+
+        <label for="email">
+            <i class="fas fa-envelope"></i> Email:
+        </label>
+        <input type="email" 
+               id="email" 
+               name="email" 
+               placeholder="Enter your email"
+               required><br><br>
+
+        <label for="address">
+            <i class="fas fa-map-marker-alt"></i> Address:
+        </label>
+        <textarea id="address" 
+                  name="address" 
+                  placeholder="Enter your address"
+                  required></textarea><br><br> -->
+
+        <!-- New input field for quantity -->
+        <label for="quantity">
+            <i class="fas fa-sort-numeric-up"></i> Quantity:
+        </label>
+        <input type="number" 
+               id="quantity" 
+               name="quantity" 
+               min="1" 
+               placeholder="Enter quantity"
+               required><br><br>
+
+        <label for="preferredTime">
+            <i class="fas fa-clock"></i> Preferred Time:
+        </label>
+        <input type="text" 
+               id="preferredTime" 
+               name="preferredTime" 
+               placeholder="Enter preferred delivery time"
+               required><br><br>
+
+        <div class="payment-options">
+            <label class="payment-label">
+                <i class="fas fa-money-bill"></i> Payment Method:
+            </label>
+            <div class="radio-group">
+                <div class="radio-option">
+                    <input type="radio" 
+                           id="cod" 
+                           name="paymentMethod" 
+                           value="cod" 
+                           required>
+                    <label for="cod">
+                        <i class="fas fa-hand-holding-dollar"></i>
+                        Cash on Delivery
+                    </label>
+                </div>
+                <!-- <div class="radio-option">
+                    <input type="radio" 
+                           id="online" 
+                           name="paymentMethod" 
+                           value="online">
+                    <label for="online">
+                        <i class="fas fa-credit-card"></i>
+                        Online Payment
+                    </label>
+                </div> -->
+            </div>
+        </div>
+
+        <input type="submit" value="Submit">
+    </form>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+
+        form {
+            max-width: 400px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        label i {
+            color: #ff6b6b;
+            margin-right: 8px;
+        }
+
+        input[type="text"],
+        input[type="tel"],
+        input[type="email"],
+        input[type="number"],
+        textarea {
+            width: 100%;
+            padding: 12px;
+            margin: 5px 0;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+
+        input[type="text"]:focus,
+        input[type="tel"]:focus,
+        input[type="email"]:focus,
+        input[type="number"]:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #ff6b6b;
+        }
+
+        .payment-options {
+            margin: 20px 0;
+        }
+
+        .payment-label {
+            margin-bottom: 15px;
+        }
+
+        .radio-group {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            padding: 10px 0;
+        }
+
+        .radio-option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+        }
+
+        .radio-option:hover {
+            border-color: #ff6b6b;
+            background: #fff5f5;
+        }
+
+        .radio-option input[type="radio"] {
+            margin: 0;
+            width: 18px;
+            height: 18px;
+            accent-color: #ff6b6b;
+        }
+
+        .radio-option label {
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            font-weight: normal;
+        }
+
+        .radio-option i {
+            font-size: 18px;
+        }
+
+        input[type="submit"] {
+            width: 100%;
+            padding: 12px;
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: background 0.3s ease;
+        }
+
+        input[type="submit"]:hover {
+            background: #ff5252;
+        }
+
+        /* Selected radio option styling */
+        .radio-option input[type="radio"]:checked + label {
+            color: #ff6b6b;
+            font-weight: 500;
+        }
+
+        .radio-option input[type="radio"]:checked + label i {
+            color: #ff6b6b;
+        }
+    </style>
+</body>
+</html>

@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Homestyle Kitchen Menu - MealMitra</title>
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="/menu-styles.css">
+   
+    <!-- Add Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- <script src="script.js" defer></script> -->
+     
+    <script>
+        if("<%= message %>"){
+                alert("hrllo")
+        }
+    </script>
+    
+        
+
+
+
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">
+                <h1>MealMitra</h1>
+            </div>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="/">Home</a></li>
+                <!-- <li><a href="/user/home">My Dashboard</a></li> -->
+                <li><a href="#partners">Tiffin Partners</a></li>
+                <!-- <li><a href="t1.html#meals"></a></li> -->
+                <li><a href="#about">About Us</a></li>
+                <% if (!isAuthenticated) { %>
+                    <li><a href="/user/login">Login</a></li>
+                <% } else { %>
+                    <li><a href="/user/myprofile">Profile</a></li>
+                    <li><a href="/user/myorders">My Orders</a></li>
+                    <li><a href="/user/logout">Logout</a></li>
+                <% } %>
+                <!-- <li><a href="/user/login">Login</a></li> -->
+            </ul>
+        </nav>
+    </header>
+
+    <main class="menu-page">
+        <section class="menu-header">
+            <h1><%= seller.username %> Menu</h1>
+            <p>Fresh, Healthy, and Delicious Home-cooked Meals</p>
+        </section>
+
+        <section class="weekly-menu">
+            <div class="menu-container">
+                <div class="menu-scroll">
+                    <div class="menu-plan">
+                        <div class="menu-plan">
+                            <% const daysOfWeek = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']; %>
+                            <% const currentDay = daysOfWeek[new Date().getDay() === 0 ? 6 : new Date().getDay() - 1]; %>
+                            
+                            <% 
+                            // Create a map to organize menu items by day
+                            const menuByDay = new Map();
+                            daysOfWeek.forEach(day => menuByDay.set(day, null));
+                            
+                            // Populate the map with menu items
+                            menuItems.forEach(item => {
+                                menuByDay.set(item.day.toLowerCase(), item);
+                            });
+
+                            // Iterate through days in order
+                            daysOfWeek.forEach(day => {
+                                const menuItem = menuByDay.get(day);
+                            %>
+                                <div class="menu-card">
+                                    <div class="day-header">
+                                        <i class="fas fa-calendar-day"></i>
+                                        <h3><%= day.charAt(0).toUpperCase() + day.slice(1) %></h3>
+                                    </div>
+                                    <div class="menu-details">
+                                        <div class="menu-description">
+                                            <div class="description-header">
+                                                <i class="fas fa-utensils"></i>
+                                                <h4>Today's Special</h4>
+                                            </div>
+                                            <div class="description-content">
+                                                <% if (menuItem && menuItem.description) { %>
+                                                    <p><%= menuItem.description %></p>
+                                                <% } else { %>
+                                                    <p class="no-menu">Menu not available</p>
+                                                <% } %>
+                                            </div>
+                                        </div>
+                                        <div class="menu-price">
+                                            <i class=""></i>
+                                            <p class="price">
+                                                <% if (menuItem && menuItem.price) { %>
+                                                    ₹<%= menuItem.price %>
+                                                <% } else { %>
+                                                    N/A
+                                                <% } %>
+                                            </p>
+                                        </div>
+                                        
+                                        <!-- Show the "Buy Now" button only if it is the current day -->
+                                        <% if (day === currentDay) { %>
+                                            <% if (menuItem && menuItem._id) { %>
+                                                <button class="buy-now-btn">
+                                                    <i class="fas fa-shopping-cart"></i>
+                                                    <a href='/user/buy/<%= menuItem._id %>' style="text-decoration: none;color: #ccc;">Buy Now</a>
+                                                </button>
+                                            <% } else { %>
+                                                <button class="buy-now-btn" disabled>
+                                                    <i class="fas fa-shopping-cart"></i>
+                                                    Not Available
+                                                </button>
+                                            <% } %>
+                                        <% } %>
+                                    </div>
+                                </div>
+                            <% }); %>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Shopping Cart Sidebar -->
+    <div class="cart-sidebar" id="cartSidebar">
+        <h2>Your Cart</h2>
+        <div class="cart-items" id="cartItems">
+            <!-- Cart items will be added here dynamically -->
+        </div>
+        <div class="cart-total">
+            <h3>Total: <span id="cartTotal">₹0</span></h3>
+            <button class="checkout-btn">Proceed to Checkout</button>
+        </div>
+    </div>
+
+    <!-- Add this modal structure at the end of the body -->
+    <div class="day-menu-modal" id="dayMenuModal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <div class="modal-header">
+                <h3 id="modalDayTitle">Monday's Menu</h3>
+                <span class="modal-price">₹100/meal</span>
+            </div>
+            <div class="modal-body">
+                <div class="meal-details">
+                    <img id="modalMealImage" src="" alt="Meal Image">
+                    <div class="meal-info">
+                        <h4 id="modalMealName"></h4>
+                        <p id="modalMealDescription">Dal, Rice, Roti, Sabzi</p>
+                        <div class="nutrition-info">
+                            <div class="nutrition-item">
+                                <span class="value">31g</span>
+                                <span class="label">Proteins</span>
+                            </div>
+                            <div class="nutrition-item">
+                                <span class="value">23g</span>
+                                <span class="label">Fats</span>
+                            </div>
+                            <div class="nutrition-item">
+                                <span class="value">79g</span>
+                                <span class="label">Carbs</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <a class="buy-now-btn"href="/user/buy" style="text-decoration: none;">Buy Now</a>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .menu-container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+
+        .menu-scroll {
+            overflow-x: auto;
+            padding: 20px 0;
+            margin: 0 -20px; /* Compensate for container padding */
+        }
+
+        .menu-plan {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            padding: 20px;
+            width: 100%;
+        }
+
+        .menu-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            overflow: hidden;
+            transition: transform 0.3s ease;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .menu-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .day-header {
+            background: linear-gradient(135deg, #1e3050, #4CAF50);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .day-header i {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .day-header h3 {
+            margin: 0;
+            font-size: 22px;
+            font-weight: 600;
+        }
+
+        .menu-details {
+            padding: 20px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .menu-description {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            flex-grow: 1;
+        }
+
+        .description-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            color: #1e3050;
+        }
+
+        .description-content {
+            color: #555;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        .menu-price {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin: 20px 0;
+            font-size: 24px;
+            color: #1e3050;
+        }
+
+        .price {
+            font-weight: bold;
+        }
+
+        .buy-now-btn {
+            background: linear-gradient(135deg, #1e3050, #4CAF50);
+            color: white;
+            text-decoration: none;
+            
+            padding: 15px 30px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin-top: auto;
+            border: none;
+            cursor: pointer;
+            display: inline-block;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .buy-now-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(30, 48, 80, 0.2);
+        }
+
+        .buy-now-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .no-menu {
+            color: #666;
+            font-style: italic;
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        @media (max-width: 768px) {
+            .menu-plan {
+                grid-template-columns: 1fr;
+                padding: 10px;
+            }
+
+            .menu-card {
+                margin: 0 auto;
+                max-width: 400px;
+            }
+        }
+
+        /* Menu page header styles */
+        .menu-header {
+            background: linear-gradient(135deg, #1e3050, #4CAF50);
+            color: white;
+            text-align: center;
+            padding: 40px 20px;
+            margin-bottom: 30px;
+        }
+
+        .menu-header h1 {
+            font-size: 36px;
+            margin: 0 0 10px 0;
+        }
+
+        .menu-header p {
+            font-size: 18px;
+            opacity: 0.9;
+            margin: 0;
+        }
+
+        /* Ensure proper spacing */
+        .weekly-menu {
+            padding: 20px 0;
+        }
+    </style>
+
+    <script>
+        if("<%= message %>"){
+            alert("<%= message %>");
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const menuScroll = document.querySelector('.menu-scroll');
+            let isScrolling = false;
+
+            menuScroll.addEventListener('scroll', function() {
+                if (!isScrolling) {
+                    isScrolling = true;
+                    requestAnimationFrame(function() {
+                        isScrolling = false;
+                    });
+                }
+            });
+
+            // Highlight current day's menu
+            const today = new Date().getDay();
+            const days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+            const todayMenu = document.getElementById(`${days[today]}-menu`);
+            if (todayMenu) {
+                todayMenu.classList.add('today');
+            }
+        });
+    </script>
+
+    <footer id="footer">
+        <div class="footer-container">
+            <!-- Company Info Section -->
+            <div class="footer-section company-info">
+                <div class="footer-logo" style="text-align: center;">
+                    <h2>MealMitra</h2>
+                    <br>
+                    <br>
+                    <p>Delivering Happiness, One Meal at a Time</p>
+                </div>
+            </div>
+
+            <!-- Services Section -->
+            <div class="footer-section services">
+                <h3>Our Services</h3>
+                <ul>
+                    <li><a href="#daily-meals">Daily Meals</a></li>
+                    <li><a href="#corporate">Corporate Orders</a></li>
+                    <li><a href="#special-events">Special Events</a></li>
+                </ul>
+            </div>
+
+            <!-- Quick Links Section -->
+            <div class="footer-section quick-links">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="#about">About Us</a></li>
+                    <li><a href="#partners">Partner With Us</a></li>
+                    <li><a href="#careers">Careers</a></li>
+                </ul>
+            </div>
+
+            <!-- Contact Section -->
+            <div class="footer-section contact-info">
+                <h3>Contact Us</h3>
+                <div class="contact-details">
+                    <div class="contact-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <p>123 Food Street, Mumbai, Maharashtra 400001</p>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-phone"></i>
+                        <p>+91 1234567890</p>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-envelope"></i>
+                        <p>support@mealmitra.com</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer Bottom -->
+        <div class="footer-bottom">
+            <div class="footer-bottom-content">
+                <p>&copy; 2024 MealMitra. All rights reserved.</p>
+                <div class="footer-bottom-links">
+                    <a href="#privacy">Privacy Policy</a>
+                    <a href="#terms">Terms & Conditions</a>
+                    <a href="#faq">FAQ</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <style>
+        /* Add footer styles */
+        #footer {
+            background-color: #1e3050;
+            color: white;
+            padding: 60px 0 0 0;
+            margin-top: 60px;
+        }
+
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+        }
+
+        .footer-section {
+            margin-bottom: 30px;
+        }
+
+        .footer-section h3 {
+            color: white;
+            font-size: 20px;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .footer-section ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 10px;
+        }
+
+        .footer-section ul li a {
+            color: #ffffff;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-section ul li a:hover {
+            color: #4CAF50;
+        }
+
+        .contact-details .contact-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            gap: 10px;
+        }
+
+        .contact-item i {
+            color: #4CAF50;
+            font-size: 18px;
+        }
+
+        .contact-item p {
+            margin: 0;
+            font-size: 14px;
+        }
+
+        .footer-bottom {
+            background-color:  rgba(121, 68, 54, 0.9);
+            padding: 20px 0;
+            margin-top: 40px;
+        }
+
+        .footer-bottom-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .footer-bottom p {
+            margin: 0;
+            font-size: 14px;
+        }
+
+        .footer-bottom-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .footer-bottom-links a {
+            color: white;
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.3s ease;
+        }
+
+        .footer-bottom-links a:hover {
+            color: #4CAF50;
+        }
+
+        @media (max-width: 768px) {
+            .footer-container {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-bottom-content {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .footer-bottom-links {
+                justify-content: center;
+            }
+        }
+    </style>
+</body>
+</html> 

@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            padding-top: 80px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: linear-gradient(135deg, #ff6b6b, #ffcccb);
+            background-image: url('https://www.transparenttextures.com/patterns/white-diamond.png');
+            background-size: cover;
+        }
+
+        .login-container {
+            background: white;
+            padding: 40px;
+            border-radius: 30px;
+            width: 100%;
+            max-width: 450px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        .login-title {
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 30px;
+        }
+
+        .role-selector {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-bottom: 25px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .login-button {
+            width: 100%;
+            padding: 14px;
+            background-color: #ff6b6b;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+
+        .forgot-password, .signup-prompt {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .forgot-password a {
+            color: #666;
+            text-decoration: none;
+        }
+
+        .signup-link {
+            color: #B8860B;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .signup-link:hover,
+        .forgot-password a:hover {
+            text-decoration: underline;
+        }
+
+        .nav-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background-color: white;
+            padding: 15px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+
+        .logo {
+            color: #628B75;
+            font-size: 28px;
+            font-weight: bold;
+            text-decoration: none;
+            font-family: 'Arial', sans-serif;
+            letter-spacing: 1px;
+        }
+
+        .logo:hover {
+            color: #9F7511;
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav-bar">
+        <a href="/" class="logo">MealMitra</a>
+    </nav>
+
+    <h1 class="page-title">Login Required</h1>
+    <div class="login-container">
+        <h2 class="login-title">LOGIN</h2>
+        <form action="/user/login" method="post">
+            
+            <div class="role-selector">
+                <label class="role-option">
+                    <input type="radio" name="role" value="user" checked>
+                    <span>User</span>
+                </label>
+                <label class="role-option">
+                    <input type="radio" name="role" value="tiffin_seller">
+                    <span>Tiffin Seller</span>
+                </label>
+            </div>
+
+            <div class="form-group">
+                <label>username</label>
+                <input type="username" name="username" placeholder="demo@example.com" required>
+            </div>
+
+            <div class="form-group">
+                <label>Password</label>
+                <!-- <input type="password" name="password" placeholder="••••••" required> -->
+                <input type="password" name="password"
+      
+       required>
+            </div>
+
+
+            <label class="remember-me">
+                <input type="checkbox" name="remember">
+                <span>Remember me?</span>
+            </label>
+
+            <button type="submit" class="login-button">LOGIN</button>
+
+            <div class="forgot-password">
+                <a href="/user/forget-password">Forgot Password?</a>
+            </div>
+
+            <div class="signup-prompt">
+                <span>Need an account? </span>
+                <a href="/user/register" class="signup-link">SIGN UP</a>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

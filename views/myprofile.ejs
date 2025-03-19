@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', Arial, sans-serif;
+        }
+
+        body {
+            background: #f8f9fa;
+            min-height: 100vh;
+            padding-top: 80px;
+        }
+
+        .profile-container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .profile-card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+            padding: 40px;
+            position: relative;
+        }
+
+        .profile-header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .profile-title {
+            color: #628B75;
+            font-size: 32px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .profile-subtitle {
+            color: #666;
+            font-size: 16px;
+        }
+
+        .profile-avatar {
+            width: 120px;
+            height: 120px;
+            background: #628B75;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 48px;
+            font-weight: 600;
+        }
+
+        .profile-details {
+            display: grid;
+            gap: 25px;
+        }
+
+        .detail-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            transition: transform 0.2s;
+        }
+
+        .detail-item:hover {
+            transform: translateX(5px);
+        }
+
+        .detail-label {
+            font-weight: 600;
+            color: #ca4a4af6;
+            min-width: 120px;
+            margin-right: 20px;
+        }
+
+        .detail-value {
+            color: #444;
+            flex: 1;
+        }
+
+        .edit-profile-btn {
+            display: block;
+            width: 100%;
+            max-width: 200px;
+            margin: 40px auto 0;
+            padding: 12px 24px;
+            background: #628B75;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            text-decoration: none;
+        }
+
+        .edit-profile-btn:hover {
+            background: #4a6b59;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(98, 139, 117, 0.2);
+        }
+
+        .nav-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background-color: white;
+            padding: 15px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.08);
+            z-index: 1000;
+        }
+
+        .logo {
+            color: #628B75;
+            font-size: 28px;
+            font-weight: bold;
+            text-decoration: none;
+            letter-spacing: 1px;
+            transition: color 0.3s ease;
+        }
+
+        .logo:hover {
+            color: #9F7511;
+        }
+
+        @media (max-width: 768px) {
+            .profile-container {
+                padding: 0 15px;
+            }
+
+            .profile-card {
+                padding: 30px 20px;
+            }
+
+            .detail-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .detail-label {
+                margin-bottom: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav-bar">
+        <a href="/" class="logo">MealMitra</a>
+    </nav>
+
+    <div class="profile-container">
+        <div class="profile-card">
+            <div class="profile-header">
+                <div class="profile-avatar">
+                    <%= user.username.charAt(0).toUpperCase() %>
+                </div>
+                <h1 class="profile-title">My Profile</h1>
+                <p class="profile-subtitle">Manage your profile information</p>
+            </div>
+
+            <div class="profile-details">
+                <div class="detail-item">
+                    <span class="detail-label">Username</span>
+                    <span class="detail-value"><%= user.username %></span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Email</span>
+                    <span class="detail-value"><%= user.email %></span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Phone</span>
+                    <span class="detail-value"><%= user.phone %></span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Address</span>
+                    <span class="detail-value"><%= user.address %></span>
+                </div>
+            </div>
+
+            <a href="/user/editprofile" class="edit-profile-btn">Edit Profile</a>
+        </div>
+    </div>
+</body>
+</html>

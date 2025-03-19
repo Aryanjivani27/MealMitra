@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tiffin Sellers Dashboard</title>
+    <link rel="stylesheet" href="/sellerstyles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .orders-title {
+            color: #1e3050;
+            font-size: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .orders-list {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .order-card {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .order-number {
+            color: #1e3050;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .order-details p {
+            margin: 0.5rem 0;
+            font-size: 1rem;
+            color: #333;
+            line-height: 1.5;
+        }
+
+        .update-status-btn {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin-top: 1rem;
+            transition: background-color 0.3s;
+        }
+
+        .update-status-btn:hover {
+            background-color: #45a049;
+        }
+
+        .status-options {
+            margin: 15px 0;
+            display: flex;
+            align-items: center;
+            gap: 30px;  /* Increased gap between options */
+            flex-direction: row;  /* Ensure horizontal layout */
+        }
+
+        .status-options label {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            color: #333;
+        }
+
+        .status-options input[type="radio"] {
+            cursor: pointer;
+            margin-right: 5px;
+        }
+
+        /* Optional: Add some hover effect */
+        .status-options label:hover {
+            color: #4CAF50;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+        }
+
+        .status-badge.pending {
+            background-color: #ffd700;
+            color: #000;
+        }
+
+        .status-badge.accept {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .status-badge.delivered {
+            background-color: #2196F3;
+            color: white;
+        }
+
+        .status-badge.cancel {
+            background-color: #f44336;
+            color: white;
+        }
+
+        /* Add these styles at the top with other styles */
+        .section {
+            display: none;
+            padding: 20px;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        /* Menu Management Styles */
+        #menu.section {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .weekday-dropdown {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            margin-bottom: 20px;
+            font-size: 16px;
+        }
+
+        .form-group {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .btn {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            text-transform: uppercase;
+            width: 100%;
+            font-size: 16px;
+        }
+
+        .btn:hover {
+            background-color: #45a049;
+        }
+
+        /* Fix sidebar styles */
+        .sidebar {
+            width: 250px;
+            background-color: #8C4831 ;
+            color: white;
+            padding: 20px;
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+        }
+
+        .main-content {
+            margin-left: 270px;
+            padding: 20px;
+        }
+
+        .nav-links {
+            list-style: none;
+            padding: 0;
+        }
+
+        .nav-links a, .links{
+            color: white;
+            text-decoration: none;
+            padding: 10px 0;
+            display: block;
+            font-size: 16px;
+        }
+
+        .nav-links a:hover {
+            color: #000;
+        }
+
+        /* Fix layout styles */
+        .dashboard {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 250px;
+            background-color: #988a2f ;
+            color: white;
+            padding: 20px;
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            z-index: 100;
+        }
+
+        .main-content {
+            flex: 1;
+            margin-left: 250px;
+            padding: 30px;
+            width: calc(100% - 250px);
+            box-sizing: border-box;
+        }
+
+        .section {
+            display: none;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        #orders-list, 
+        #menu,
+        .form-group {
+            width: 100%;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .order-card,
+        .form-group {
+            width: 100%;
+            box-sizing: border-box;
+            margin-bottom: 20px;
+        }
+
+        /* Menu Management specific styles */
+        #menu .form-group {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            margin-bottom: 30px;
+        }
+
+        .weekday-dropdown,
+        #dish-price,
+        #dish-description {
+            width: 100%;
+            box-sizing: border-box;
+            margin-bottom: 20px;
+        }
+
+        /* Orders title styling */
+        .orders-title {
+            width: 100%;
+            max-width: 1000px;
+            margin: 0 auto 30px auto;
+            padding: 0 20px;
+            box-sizing: border-box;
+        }
+
+        /* Ensure proper spacing between sections */
+        #orders.section,
+        #menu.section {
+            padding-top: 40px;
+        }
+        #menu-list{
+            width: 100%;
+            display:flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+        .card {
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            display: flex;
+            padding: 2rem;
+            justify-content: space-between;
+            align-items: center;
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .card:hover {
+            transform: scale(1.05);
+        }
+
+        .day {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .description {
+            font-size: 16px;
+            color: #666;
+            margin: 10px 0;
+        }
+
+        .price {
+            font-size: 20px;
+            color: #28a745;
+            font-weight: bold;
+        }
+        
+        /* .todays-orders-box {
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        } */
+
+        /* .todays-orders-box h3 {
+            margin-top: 0;
+            color: #1e3050;
+        } */
+
+        .orders-summary {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .order-summary {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .order-summary p {
+            margin: 0;
+            font-size: 14px;
+            color: #333;
+        }
+        .order-box {
+    background-color: #ffffff;
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    padding: 20px;
+    width: 200px;
+    text-align: center;
+    box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.order-count {
+    font-size: 32px;
+    font-weight: bold;
+    color: #4caf50; /* Green color */
+}
+
+.download-invoice-btn {
+    background-color: #6caa54;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    margin-top: 10px;
+    width: fit-content;
+    transition: background-color 0.3s ease;
+}
+
+.download-invoice-btn:hover {
+    background-color: #6b3725;
+}
+
+.profile-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.profile-card {
+    background: white;
+    border-radius: 15px;
+    padding: 30px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    gap: 30px;
+    align-items: center;
+}
+
+.profile-image {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 3px solid #988a2f;
+}
+
+.profile-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.profile-details {
+    flex: 1;
+}
+
+.profile-details p {
+    margin: 15px 0;
+    font-size: 16px;
+    color: #333;
+}
+
+.profile-details strong {
+    color: #988a2f;
+    width: 100px;
+    display: inline-block;
+}
+
+.edit-profile-btn {
+    background-color: #988a2f;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    margin-top: 20px;
+    transition: background-color 0.3s ease;
+}
+
+.edit-profile-btn:hover {
+    background-color: #7a6f26;
+}
+
+.edit-profile-btn i {
+    font-size: 16px;
+}
+    </style>
+</head>
+
+<body>
+   
+    <div class="dashboard">
+        <div class="sidebar">
+           
+            <h2>MealMitra</h2>
+
+            <ul class="nav-links">
+                <li><a href="#" data-section="home">Home</a></li>
+                <li><a href="#" data-section="orders">View Orders</a></li>
+                <li><a href="#" data-section="menu">Manage Menu</a></li>
+                <li><a href="#" data-section="profile">My Profile</a></li>
+            </ul>
+                <!-- <li><a href="#" data-section="customers">Customers</a></li> -->
+                <% if (isAuthenticated) { %>
+                    <a class="links" href="/user/sellerlogout">Logout</a>
+                <% } else { %>
+                    <a class="links" href="/login">Login</a>
+                    <% } %>
+
+        </div>
+
+        <div class="main-content">
+            <!-- Home Section -->
+            <div id="home" class="section active">
+                <h2 class="orders-title">welcome to <%= sellers.username %></h2>
+                <div class="todays-orders-box">
+                   
+                    <div class="orders-summary">
+                        
+                        <div class="order-box">
+                            <h2>Today's Order</h2>
+                           
+                            <p class="order-count"><%=todaysOrders.length %></p> <!-- The number of orders -->
+                        </div>
+                       
+                    </div>
+                </div>
+            </div>
+
+            <!-- Orders Section -->
+            <div id="orders" class="section">
+                <h2 class="orders-title">Current Orders</h2>
+                <div id="orders-list">
+                    <% orders.forEach(order => { %>
+                        <div class="order-card">
+                            <div class="order-number">#<%= order._id %></div>
+                            <div class="order-details">
+                                <p class="customer-name"><strong>Customer:</strong> <%= order.username %></p>
+                                <p class="order-items"><strong>Quantity:</strong> <%= order.quantity %></p>
+                                <p class="order-status"><strong>Current Status:</strong> 
+                                    <span class="status-badge <%= order.status %>">
+                                        <%= order.status.toUpperCase() %>
+                                    </span>
+                                </p>
+                                <p><strong>Total Amount:</strong> ₹<%= order.totalamount %></p>
+                                <p><strong>Delivery Address:</strong> <%= order.address %></p>
+                                <p><strong>Phone:</strong> <%= order.phone %></p>
+                                
+                                <!-- Add Download Invoice Button -->
+                                <% if (order.status.toLowerCase() === 'delivered') { %>
+                                    <a href="/user/download-invoice/<%= order._id %>" class="download-invoice-btn">
+                                        <i class="fas fa-download"></i> Download Invoice
+                                    </a>
+                                <% } %>
+                                
+                                <% if (!['delivered', 'cancel'].includes(order.status.toLowerCase())) { %>
+                                    <form action="/user/update-order-status/<%=order._id%>" method="post">
+                                        <div class="status-options">
+                                            <label>
+                                                <input type="radio" name="radio" value="cancel">
+                                                Cancel
+                                            </label>
+                                            <label>
+                                                <input type="radio" name="radio" value="accept">
+                                                Accept
+                                            </label>
+                                            <label>
+                                                <input type="radio" name="radio" value="delivered">
+                                                Delivered
+                                            </label>
+                                            <button type="submit" class="update-status-btn">Update Status</button>
+                                        </div>
+                                    </form>
+                                <% } %>
+                            </div>
+                        </div>
+                    <% }); %>
+                </div>
+            </div>
+
+            <!-- Menu Section -->
+            <div id="menu" class="section">
+                <h2 class="orders-title">Menu Management</h2>
+                <form id="add-menu-item" action="/user/add-menu-item" method="post">
+                    <div class="form-group">
+                        <select id="weekday-selector" class="weekday-dropdown" name="day">
+                            <option value="monday">Monday</option>
+                            <option value="tuesday">Tuesday</option>
+                            <option value="wednesday">Wednesday</option>
+                            <option value="thursday">Thursday</option>
+                            <option value="friday">Friday</option>
+                            <option value="saturday">Saturday</option>
+                            <option value="sunday">Sunday</option>
+                        </select>
+                        <input type="number" id="dish-price" name="price" placeholder="Enter dish price" required>
+                        <textarea id="dish-description" name="description" placeholder="Enter dish description" required></textarea>
+                        <button type="submit" class="btn">Add Dish</button>
+                    </div>
+                </form>
+                <div id="menu-list">
+                    <% menus.forEach(menu => { %>
+                        <div class="card">
+                            <div class="day"><%= menu.day.charAt(0).toUpperCase() + menu.day.slice(1) %></div>
+                            <div class="description"><%= menu.description %></div>
+                            <div class="price">₹<%= menu.price %></div>
+                        </div>
+                    <% }) %>
+                   
+                    <!-- Menu items will be populated here -->
+                </div>
+            </div>
+
+            <!-- Profile Section -->
+            <div id="profile" class="section">
+                <h2 class="orders-title">My Profile</h2>
+                <div class="profile-container">
+                    <div class="profile-card">
+                        <div class="profile-image">
+                            <img src="/images/<%= sellers.image %>" alt="Profile Picture">
+                        </div>
+                        <div class="profile-details">
+                            <p><strong>Username:</strong> <%= sellers.username %></p>
+                            <p><strong>Email:</strong> <%= sellers.email %></p>
+                            <p><strong>Phone:</strong> <%= sellers.phone %></p>
+                            <p><strong>Adress:</strong><%= sellers.address %></p>
+                            <!-- Add the Edit Profile button -->
+                            <a href="/user/editsellerprofile" class="edit-profile-btn">
+                                <i class="fas fa-edit"></i> Edit Profile
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Customers Section -->
+            <!-- <div id="customers" class="section">
+                <h2>Customer Orders</h2>
+                <div id="customers-list">
+                    <!-- Customers will be populated here -->
+                </div>
+            </div> -->
+        </div>
+    </div>
+
+    <script>
+       
+       
+        Navigation
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const sectionId = link.getAttribute('data-section');
+                document.querySelectorAll('.section').forEach(section => {
+                    section.classList.remove('active');
+                });
+                document.getElementById(sectionId).classList.add('active');
+            });
+        });
+
+      
+        // Initialize displays
+        displayMenu('monday');
+        displayCustomers();
+
+        // Add this to your existing script section
+        document.addEventListener('DOMContentLoaded', function () {
+            // Create and add menu toggle button
+            const menuToggle = document.createElement('button');
+            menuToggle.className = 'menu-toggle';
+            menuToggle.innerHTML = '☰';
+            document.body.appendChild(menuToggle);
+
+            // Menu toggle functionality
+            menuToggle.addEventListener('click', function () {
+                const sidebar = document.querySelector('.sidebar');
+                sidebar.classList.toggle('active');
+            });
+
+            // Close sidebar when clicking outside
+            document.addEventListener('click', function (e) {
+                const sidebar = document.querySelector('.sidebar');
+                const menuToggle = document.querySelector('.menu-toggle');
+                if (!sidebar.contains(e.target) && !menuToggle.contains(e.target)) {
+                    sidebar.classList.remove('active');
+                }
+            });
+        });
+
+        document.querySelectorAll('form').forEach(form => {
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                try {
+                    const formData = new FormData(e.target);
+                    const response = await fetch(e.target.action, {
+                        method: 'POST',
+                        body: formData
+                    });
+                    
+                    if (response.ok) {
+                        // Refresh the page to show updated status
+                        window.location.reload();
+                    } else {
+                        alert('Error updating order status. Please try again.');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('Error updating order status. Please try again.');
+                }
+            });
+        });
+    </script>
+    <script>
+        document.getElementById('add-menu-item').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const data = {
+                day: formData.get('day'),
+                price: Number(formData.get('price')),
+                description: formData.get('description')
+            };
+            
+            try {
+                const response = await fetch('/user/add-menu-item', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+                
+                if (response.ok) {
+                    alert(result.message);
+                    window.location.reload();
+                } else {
+                    alert('Error: ' + (result.message || 'Failed to add menu item'));
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error adding menu item. Please try again.');
+            }
+        });
+    </script>
+</body>
+
+</html>
